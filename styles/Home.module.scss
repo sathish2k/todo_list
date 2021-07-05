@@ -1,0 +1,21 @@
+.title{
+    flex: 1 1;
+}
+.root {
+    padding: '2px 4px';
+    display: flex;
+    align-items: baseline;
+    flex-grow: 1;
+    justify-content: space-between;
+    padding: 8px;
+  }
+  .mainWidth{
+      width:70%
+  }
+  .button{
+      float: right;
+  }
+  .input{
+      margin-left: 10px;
+  }
+ 
