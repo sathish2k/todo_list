@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import * as mongoose from 'mongoose'
 import { Task } from './interfaces/task.interface';
 import { CreateTaskDTO } from './dto/task.dto';
 
@@ -13,7 +14,7 @@ export class TaskService {
     return createdCat.save();
   }
   async findAll(id): Promise<any> {
-    return await this.TaskModel.find({owner: id}).exec();
+    return await this.TaskModel.find({ owner: id }).exec();
   }
   async findById(id): Promise<Task> {
     const customer = await this.TaskModel.findById(id).exec();
@@ -29,8 +30,60 @@ export class TaskService {
     return await this.TaskModel.findByIdAndRemove(id);
   }
 
-  async getStats(condition): Promise<any> {
-    return await this.TaskModel.countDocuments(condition);
+  async getStats(owner): Promise<any> {
+    // return await Promise.all([this.TaskModel.countDocuments({owner}), this.TaskModel.countDocuments({owner, completed: true}), this.TaskModel.countDocuments({owner, completed: false})]);
+    return await this.TaskModel.aggregate([
+      {
+        '$facet': {
+          'total': [
+            {
+              '$match': {
+                'owner': mongoose.Types.ObjectId(owner)
+              }
+            }, {
+              '$count': 'total'
+            }
+          ], 
+          'completed': [
+            {
+              '$match': {
+                'owner': mongoose.Types.ObjectId(owner), 
+                'completed': true
+              }
+            }, {
+              '$count': 'completed'
+            }
+          ], 
+          'notcompleted': [
+            {
+              '$match': {
+                'owner': mongoose.Types.ObjectId(owner), 
+                'completed': false
+              }
+            }, {
+              '$count': 'notcompleted'
+            }
+          ]
+        }
+      }, {
+        '$project': {
+          'total': {
+            '$arrayElemAt': [
+              '$total.total', 0
+            ]
+          }, 
+          'completed': {
+            '$arrayElemAt': [
+              '$completed.completed', 0
+            ]
+          }, 
+          'notcompleted': {
+            '$arrayElemAt': [
+              '$notcompleted.notcompleted', 0
+            ]
+          }
+        }
+      }
+    ]);
   }
-
 }
