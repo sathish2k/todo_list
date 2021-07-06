@@ -90,12 +90,11 @@ export class TaskController {
   }
 
   @Get('/mystats')
-  async getMystats(@Req() req, @Res() res, @Query('completed') completed: Boolean) {
+  async getMystats(@Req() req, @Res() res) {
     try{
-      let condition = {owner: req.userId};
-      if(completed ?? 0 != 0) condition['completed'] = completed;
-      const count = await this.TaskService.getStats(condition);
-      return res.status(HttpStatus.OK).json({count})
+      const data = await this.TaskService.getStats(req.userId);
+      console.log("***********", data)
+      return res.status(HttpStatus.OK).json(data[0])
     }catch(err){
       console.error(`[Task]  Error while getting stats: ${JSON.stringify(err)}`);
       return res.status(500).json({
