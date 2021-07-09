@@ -15,10 +15,12 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Styles from '../../styles/Home.module.scss';
 import Container from '@material-ui/core/Container';
 import InputBase from '@material-ui/core/InputBase';
-import { Button, Paper } from '@material-ui/core';
+import { Button, Paper } from '@material-ui/core'; 
+import Link from 'next/link' 
+
 
 let Home = (props) => {
-    let [auth, setAuth] = useState(true)
+    let [auth, setAuth] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
@@ -38,7 +40,7 @@ let Home = (props) => {
             <AppBar position="static">
                 <Toolbar>
                     <Typography variant="h6" className={Styles.title}>
-                        Todo List App
+                        Inresto Todo List App
                     </Typography>
                     {auth && (
                         <div>
@@ -68,48 +70,50 @@ let Home = (props) => {
                             </Menu>
                         </div>
                     )}
+                    {!auth && (<div>
+                        <Link href="/login" passHref><Button variant="contained">Login</Button></Link></div>)}
                 </Toolbar>
             </AppBar>
             <Container maxWidth="lg">
                 <div className={Styles.mainWidth}>
-                <h1>Welcome Back, SAT</h1>
-                <Paper classes={{root:Styles.root}}>
-                <InputBase
-                    classes={{root:Styles.input}}
-                    placeholder="What Needs to be done"
-                    inputProps={{ 'aria-label': 'What Needs to be done' }}
-                />
-                <Button className={Styles.button} color="primary" variant="contained">Add</Button>
-                </Paper>
-                <List>
-                    {[0, 1, 2, 3].map((value) => {
-                        const labelId = `checkbox-list-label-${value}`;
+                    <h1>Welcome Back, Admin</h1>
+                    <Paper classes={{ root: Styles.root }}>
+                        <InputBase
+                            classes={{ root: Styles.input }}
+                            placeholder="What Needs to be done"
+                            inputProps={{ 'aria-label': 'What Needs to be done' }}
+                        />
+                        <Button className={Styles.button} color="primary" variant="contained">Add</Button>
+                    </Paper>
+                    <List>
+                        {[0, 1, 2, 3].map((value) => {
+                            const labelId = `checkbox-list-label-${value}`;
 
-                        return (
-                            <ListItem key={value} role={undefined} dense button >
-                                <ListItemIcon>
-                                    <Checkbox
-                                        edge="start"
-                                        checked={false}
-                                        tabIndex={-1}
-                                        disableRipple
-                                        inputProps={{ 'aria-labelledby': labelId }}
-                                    />
-                                </ListItemIcon>
-                                <ListItemText id={labelId} primary={`Line item ${value + 1}`} />
+                            return (
+                                <ListItem key={value} role={undefined} dense button >
+                                    <ListItemIcon>
+                                        <Checkbox
+                                            edge="start"
+                                            checked={false}
+                                            tabIndex={-1}
+                                            disableRipple
+                                            inputProps={{ 'aria-labelledby': labelId }}
+                                        />
+                                    </ListItemIcon>
+                                    <ListItemText id={labelId} primary={`Line item ${value + 1}`} />
 
-                                <ListItemSecondaryAction>
-                                    <IconButton edge="end" aria-label="comments">
-                                        <Edit />
-                                    </IconButton>
-                                    <IconButton edge="end" aria-label="comments">
-                                        <Delete />
-                                    </IconButton>
-                                </ListItemSecondaryAction>
-                            </ListItem>
-                        );
-                    })}
-                </List>
+                                    <ListItemSecondaryAction>
+                                        <IconButton edge="end" aria-label="comments">
+                                            <Edit />
+                                        </IconButton>
+                                        <IconButton edge="end" aria-label="comments">
+                                            <Delete />
+                                        </IconButton>
+                                    </ListItemSecondaryAction>
+                                </ListItem>
+                            );
+                        })}
+                    </List>
                 </div>
             </Container>
         </div>
