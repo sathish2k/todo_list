@@ -1,7 +1,9 @@
 import Head from 'next/head'
-import TodoList from '../components/todo'
+import TodoList from '../components/todo';
+import {authInitialProps} from '../services/auth'
 
-export default function Home() {
+let Home = ()=> {
+  
   return (
     <div >
       <Head>
@@ -13,3 +15,8 @@ export default function Home() {
     </div>
   )
 }
+export default Home
+
+Home.getInitialProps = authInitialProps()
+
+

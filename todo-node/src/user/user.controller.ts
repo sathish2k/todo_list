@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Req, Res } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDTO } from './dto/createUser.dto';
 import { LoginUserDTO } from './dto/loginUser.dto';
@@ -33,19 +33,18 @@ export class UserController {
   }
 
   @Post('/login')
-  async loginUser(@Res() res, @Body() userBody: LoginUserDTO) {
+  async loginUser(@Res() res,@Req() req, @Body() userBody: LoginUserDTO) {
     try{
       console.log(userBody)
       const user = await this.userService.login(userBody);
-      console.log(user)
       const isMatch = await bcrypt.compare(userBody.password, user.password);
       if(!isMatch) return res.status(HttpStatus.BAD_REQUEST).json({
         message: "Invalid credentials!"
       });
       const token = await this.userService.generateAuthToken(user);
       user['tokens'] = user['tokens'].concat({token});
-      await user.save();
-      res.cookie('token', token);
+      let userSaved = await user.save();
+      res.cookie('token', token,{httpOnly:true});
       return res.status(HttpStatus.OK).json({
         message: "Login successful",
         user,
@@ -88,5 +87,13 @@ export class UserController {
         message: `Internal server error!`,
       });
     }
+  }
+
+  @Get('/profile')
+  async getProfile(@Req() Req, @Res() Res) {
+    console.log(Req.user)
+    Res.status(HttpStatus.OK).json({
+      user: Req.user
+    });
   }
 }

@@ -1,16 +1,29 @@
 import Styles from './login.module.scss'
 import Card from '@material-ui/core/Card';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import {Post} from '../../integrationLayer/httpLayer';
+import {useRouter} from 'next/router'
+import { authInitialProps} from '../../services/auth'
 
 let Login = () => {
+    let router = useRouter()
     const { handleSubmit, register, formState: { errors },formState } = useForm({mode: 'onChange'});
     const onSubmit = (data) => {
         console.log(data)
+        Post(process.env.baseUrl+'/user/login',data,{withCredentials:true}).then((res)=>{
+            console.log(res)
+            if(res.status ==200){
+                if(typeof window != 'undefined'){
+                window['__USER__'] = res.data.user
+                router.replace('/')
+                }
+            }
+        }).catch((err)=>{
+            console.log(err)
+        })
     }
     return (
         <div className={Styles.loginContainer}>
@@ -27,8 +40,8 @@ let Login = () => {
                                 <h2>Hello!</h2>
                                 <p>Sign into Your account </p>
                                 <div>
-                                    <TextField variant="outlined" classes={{ root: Styles.inputWidth }}  {...register("emailAddress", { required: {value:true,message:"email id is required"} })} helperText={errors.emailAddress?errors.emailAddress.message:""}
-                                    error={errors.emailAddress ? true : false} id="component-outlined" name="emailAddress" label="Email Address" />
+                                    <TextField variant="outlined" classes={{ root: Styles.inputWidth }}  {...register("email", { required: {value:true,message:"email id is required"} })} helperText={errors.email?errors.email.message:""}
+                                    error={errors.email ? true : false} id="component-outlined" name="email" label="Email Address" />
                                 </div>
                                 <div>
                                     <TextField variant="outlined" classes={{ root: Styles.inputWidth }} type="password" {...register("password", { required: {value:true,message:"Password is required"} })} helperText={errors.password?errors.password.message:""}
@@ -56,3 +69,5 @@ let Login = () => {
     )
 }
 export default Login
+
+Login.getInitialProps = authInitialProps()

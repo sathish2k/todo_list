@@ -14,10 +14,10 @@ export class AuthMiddleware implements NestMiddleware {
     console.log('Auth middleware log');
     //Authentication
     try {
+      console.log('try..........')
       // console.log(req.headers);
-      const token = req.headers['authorization'].replace('Bearer ', '') || req.cookies['token'];
-      // console.log(token);
-      const cookies = req.cookies;
+      const token =  req.cookies['token'] ;
+      console.log(token);
       const decoded = await jwt.verify(token, 'JWT_SECRET_KEY');
       req['userId'] = decoded._id;
       const user = await this.userModel.findOne({

@@ -1,8 +1,9 @@
 import '../styles/globals.css';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { useEffect } from 'react';
+import UserContext from '../services/userContext'
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps, router }) {
   useEffect(() => {
     const jssStyles = document.querySelector('#jss-server-side');
     if (jssStyles) {
@@ -10,10 +11,10 @@ function MyApp({ Component, pageProps }) {
     }
   }, [])
   return (
-    <>
+    <UserContext>
       <CssBaseline />
       <Component {...pageProps} />
-    </>
+    </UserContext>
   )
 }
 
